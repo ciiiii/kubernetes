@@ -14,8 +14,8 @@ script:
 - KUBE_BUILD_PLATFORMS=linux/amd64 KUBE_BUILD_CONFORMANCE=n KUBE_BUILD_HYPERKUBE=n make release-images
 - docker load --input _output/release-images/amd64/kube-apiserver.tar
 - image_id=$(docker images --format="{{.Repository}} {{.ID}}"|grep "^k8s.gcr.io/kube-apiserver-amd64" |cut -d' ' -f2) 
-- docker tag $image_id "killercai/kube-apisever:debug-${TRAVIS_COMMIT}"
-- docker push "killercai/kube-apisever:debug-${TRAVIS_COMMIT}"
+- docker tag $image_id "killercai/kube-apiserver:debug-${TRAVIS_COMMIT}"
+- docker push "killercai/kube-apiserver:debug-${TRAVIS_COMMIT}"
 
 # - KUBE_BUILD_PLATFORMS=linux/amd64 make WHAT=cmd/kube-apiserver
 # deploy:
