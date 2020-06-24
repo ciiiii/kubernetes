@@ -12,10 +12,10 @@ before_scirpt:
 - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 script:
 - KUBE_BUILD_PLATFORMS=linux/amd64 KUBE_BUILD_CONFORMANCE=n KUBE_BUILD_HYPERKUBE=n make release-images
-- | 
-  docker load --input _output/release-images/kube-apiserver.tar | 
-  sed -n 's/^Loaded image ID: sha256:\([0-9a-f]*\).*/\1/p' | 
-  xargs -i docker tag {} "killercai/kube-apisever:debug-${TRAVIS_COMMIT}"
+- docker load --input _output/release-images/amd64/kube-apiserver.tar
+- image_id=$(docker images --format="{{.Repository}} {{.ID}}"|grep "^k8s.gcr.io/kube-apiserver-amd64" |cut -d' ' -f2) 
+- docker tag $image_id "killercai/kube-apisever:debug-${TRAVIS_COMMIT}"
+- docker push "killercai/kube-apisever:debug-${TRAVIS_COMMIT}"
 
 # - KUBE_BUILD_PLATFORMS=linux/amd64 make WHAT=cmd/kube-apiserver
 # deploy:
