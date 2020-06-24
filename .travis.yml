@@ -1,5 +1,5 @@
-git:
-  depth: 1
+# git:
+#   depth: 1
 branches:
   only:
   - debug-1.16.10
@@ -11,7 +11,7 @@ services:
 before_scirpt:
 - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 script:
-- KUBE_BUILD_PLATFORMS=linux/amd64 KUBE_BUILD_CONFORMANCE=n KUBE_BUILD_HYPERKUBE=n make release-images WHAT=cmd/kube-apiserver
+- KUBE_BUILD_PLATFORMS=linux/amd64 KUBE_BUILD_CONFORMANCE=n KUBE_BUILD_HYPERKUBE=n make release-images
 - | 
   docker load --input _output/release-images/kube-apiserver.tar | 
   sed -n 's/^Loaded image ID: sha256:\([0-9a-f]*\).*/\1/p' | 
