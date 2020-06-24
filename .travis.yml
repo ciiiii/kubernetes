@@ -1,17 +1,29 @@
+git:
+  depth: 1
 branches:
   only:
   - debug-1.16.10
 language: go
 go:
 - 1.13.9
+services:
+- docker
+before_scirpt:
+- ehco $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 script:
-- KUBE_BUILD_PLATFORMS=linux/amd64 make WHAT=cmd/kube-apiserver
-deploy:
-  provider: releases
-  api_key:
-    secure: Wg+TWr5Zcj+5LBx9AVkfNRlDL/BfpobSA3pwVlMO0VKUYRkxlIkBNEyzZyQaLE1VWkrjGeeD5D67Q3imio09DXu1ggC6MPxwdBGBKeszPtzojTcW+UuQx13e6+eY61Ly+Ox1f0lueQ5U3N1ZYh0s9QqDWYC/96khOuSvgV6gVYMhYclMY4174ce4DcMQPvDK6yQs5Bpsf+9We7DGZ+PzPIV73OmiPLuZiSZhkbTx5jPQQSarSN9L6L89/Df1A0G46o2PPzm52ODNjijJllbFHq9S5C7m2mWXp7T9auuNf0W4+1EVTiG66GoboTSWoitKBskcVE1INnPImUiBuCeKVb/q5xgYadrHX4PgOIkl4rvsjJwhZmQf8cZVt1e8+uHf12s+LRi/RxONqmEFK7C1QaW+aOKVSJ+Iiv2CmNHQoNUaPxUS5zfSN08+L42O84+zksvzetPKVoqlUeqqB3tmUnV8sftThRPuIxWqDMYQxZQPFLZ1E5K8dpEUntdY8Bz01+AD7BpMPM1cLT51K3Eba/dD04614jv4TVxROoZBkCnwKdQOwJxvL6/Hs1A7etOKPcWFvQRxbPjhKtDmob4IKuQudbjuhgX2QaeiASybE98aW2wGncwRAvkSyMUtOCGb6//3RrthyLrcgnm93j4K+xfQi46rBNFDG0/LOYUSkw4=
-  file: _output/bin/kube-apiserver
-  on:
-    repo: ciiiii/kubernetes
-    branch: debug-1.16.10
-  skip_cleanup: 'true'
+- KUBE_BUILD_PLATFORMS=linux/amd64 KUBE_BUILD_CONFORMANCE=n KUBE_BUILD_HYPERKUBE=n make release-images WHAT=cmd/kube-apiserver
+- | 
+  docker load --input _output/release-images/kube-apiserver.tar | 
+  sed -n 's/^Loaded image ID: sha256:\([0-9a-f]*\).*/\1/p' | 
+  xargs -i docker tag {} "killercai/kube-apisever:debug-${TRAVIS_COMMIT}"
+
+# - KUBE_BUILD_PLATFORMS=linux/amd64 make WHAT=cmd/kube-apiserver
+# deploy:
+#   provider: releases
+#   api_key:
+#     secure: Wg+TWr5Zcj+5LBx9AVkfNRlDL/BfpobSA3pwVlMO0VKUYRkxlIkBNEyzZyQaLE1VWkrjGeeD5D67Q3imio09DXu1ggC6MPxwdBGBKeszPtzojTcW+UuQx13e6+eY61Ly+Ox1f0lueQ5U3N1ZYh0s9QqDWYC/96khOuSvgV6gVYMhYclMY4174ce4DcMQPvDK6yQs5Bpsf+9We7DGZ+PzPIV73OmiPLuZiSZhkbTx5jPQQSarSN9L6L89/Df1A0G46o2PPzm52ODNjijJllbFHq9S5C7m2mWXp7T9auuNf0W4+1EVTiG66GoboTSWoitKBskcVE1INnPImUiBuCeKVb/q5xgYadrHX4PgOIkl4rvsjJwhZmQf8cZVt1e8+uHf12s+LRi/RxONqmEFK7C1QaW+aOKVSJ+Iiv2CmNHQoNUaPxUS5zfSN08+L42O84+zksvzetPKVoqlUeqqB3tmUnV8sftThRPuIxWqDMYQxZQPFLZ1E5K8dpEUntdY8Bz01+AD7BpMPM1cLT51K3Eba/dD04614jv4TVxROoZBkCnwKdQOwJxvL6/Hs1A7etOKPcWFvQRxbPjhKtDmob4IKuQudbjuhgX2QaeiASybE98aW2wGncwRAvkSyMUtOCGb6//3RrthyLrcgnm93j4K+xfQi46rBNFDG0/LOYUSkw4=
+#   file: _output/bin/kube-apiserver
+#   on:
+#     repo: ciiiii/kubernetes
+#     branch: debug-1.16.10
+#   skip_cleanup: 'true'
