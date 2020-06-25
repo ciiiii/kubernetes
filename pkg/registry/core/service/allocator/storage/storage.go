@@ -33,6 +33,7 @@ import (
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/registry/core/rangeallocation"
 	"k8s.io/kubernetes/pkg/registry/core/service/allocator"
+	"github.com/getsentry/sentry-go"
 )
 
 var (
@@ -86,12 +87,14 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 
 	ok, err := e.alloc.Allocate(offset)
 	if !ok || err != nil {
+		sentry.CaptureException(err)
 		return ok, err
 	}
 
 	err = e.tryUpdate(func() error {
 		ok, err := e.alloc.Allocate(offset)
 		if err != nil {
+			sentry.CaptureException(err)
 			return err
 		}
 		if !ok {
@@ -100,6 +103,7 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 		return nil
 	})
 	if err != nil {
+		sentry.CaptureException(err)
 		if err == errorUnableToAllocate {
 			return false, nil
 		}

@@ -55,6 +55,7 @@ require (
 	github.com/euank/go-kmsg-parser v2.0.0+incompatible // indirect
 	github.com/evanphx/json-patch v4.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.4.7
+	github.com/getsentry/sentry-go v0.6.1
 	github.com/go-bindata/go-bindata v3.1.1+incompatible
 	github.com/go-openapi/loads v0.19.2
 	github.com/go-openapi/spec v0.19.2
@@ -68,7 +69,7 @@ require (
 	github.com/golang/protobuf v1.3.1
 	github.com/google/cadvisor v0.34.0
 	github.com/google/certificate-transparency-go v1.0.21 // indirect
-	github.com/google/go-cmp v0.3.0
+	github.com/google/go-cmp v0.4.0
 	github.com/google/gofuzz v1.0.0
 	github.com/googleapis/gnostic v0.0.0-20170729233727-0c5108395e2d
 	github.com/gorilla/context v1.1.1 // indirect
@@ -92,8 +93,8 @@ require (
 	github.com/mrunalp/fileutils v0.0.0-20160930181131-4ee1cc9a8058 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20120707110453-a547fc61f48d
 	github.com/mvdan/xurls v1.1.0
-	github.com/onsi/ginkgo v1.8.0
-	github.com/onsi/gomega v1.5.0
+	github.com/onsi/ginkgo v1.10.3
+	github.com/onsi/gomega v1.7.1
 	github.com/opencontainers/go-digest v1.0.0-rc1
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v1.0.0-rc2.0.20190611121236-6cc515888830
@@ -109,17 +110,15 @@ require (
 	github.com/quobyte/api v0.1.2
 	github.com/robfig/cron v1.1.0
 	github.com/seccomp/libseccomp-golang v0.9.1 // indirect
-	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a // indirect
 	github.com/spf13/afero v1.2.2
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.3.2
 	github.com/storageos/go-api v0.0.0-20180912212459-343b3eff91fc
-	github.com/stretchr/testify v1.3.0
+	github.com/stretchr/testify v1.4.0
 	github.com/syndtr/gocapability v0.0.0-20160928074757-e7cb7fa329f4 // indirect
 	github.com/thecodeteam/goscaleio v0.1.0
-	github.com/urfave/negroni v1.0.0 // indirect
 	github.com/vishvananda/netlink v0.0.0-20171020171820-b2de5d10e38e
 	github.com/vishvananda/netns v0.0.0-20171111001504-be1fbeda1936 // indirect
 	github.com/vmware/govmomi v0.20.1

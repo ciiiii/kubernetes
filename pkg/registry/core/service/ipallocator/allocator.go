@@ -23,6 +23,7 @@ import (
 	"k8s.io/kubernetes/pkg/registry/core/service/allocator"
 	"math/big"
 	"net"
+	"github.com/getsentry/sentry-go"
 )
 
 // Interface manages the allocation of IP addresses out of a range. Interface
@@ -151,6 +152,7 @@ func (r *Range) Allocate(ip net.IP) error {
 
 	allocated, err := r.alloc.Allocate(offset)
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 	if !allocated {
