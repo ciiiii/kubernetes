@@ -50,7 +50,15 @@ import (
 
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/kubernetes/pkg/features"
+	"github.com/getsentry/sentry-go"
 )
+
+func init() {
+	sentry.Init(sentry.ClientOptions{
+		Dsn: "http://1663aab8f764494191abf7aa7208ada5@111.231.98.175/3",
+	})
+	sentry.CaptureMessage("init sentry")
+}
 
 // REST adapts a service registry into apiserver's RESTStorage model.
 type REST struct {
@@ -679,9 +687,11 @@ func initClusterIP(service *api.Service, allocator ipallocator.Interface) (bool,
 		service.Spec.ClusterIP = ip.String()
 		return true, nil
 	case service.Spec.ClusterIP != api.ClusterIPNone && service.Spec.ClusterIP != "":
+		sentry.CaptureMessage("Try to respect the requested IP.")
 		// Try to respect the requested IP.
 		if err := allocator.Allocate(net.ParseIP(service.Spec.ClusterIP)); err != nil {
 			// TODO: when validation becomes versioned, this gets more complicated.
+			sentry.CaptureException(err)
 			el := field.ErrorList{field.Invalid(field.NewPath("spec", "clusterIP"), service.Spec.ClusterIP, err.Error())}
 			return false, errors.NewInvalid(api.Kind("Service"), service.Name, el)
 		}

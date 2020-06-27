@@ -36,12 +36,6 @@ import (
 	"github.com/getsentry/sentry-go"
 )
 
-func init() {
-	sentry.Init(sentry.ClientOptions{
-		Dsn: "http://1663aab8f764494191abf7aa7208ada5@111.231.98.175/3",
-	})
-	sentry.CaptureMessage("storage.go")
-}
 
 var (
 	errorUnableToAllocate = errors.New("unable to allocate")
@@ -89,7 +83,7 @@ func NewEtcd(alloc allocator.Snapshottable, baseKey string, resource schema.Grou
 
 // Allocate attempts to allocate the item locally and then in etcd.
 func (e *Etcd) Allocate(offset int) (bool, error) {
-	sentry.CaptureMessage("start allocating")
+	sentry.CaptureMessage("start allocating ip in bitmap")
 	e.lock.Lock()
 	defer e.lock.Unlock()
 
@@ -98,6 +92,8 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 		sentry.CaptureException(err)
 		return ok, err
 	}
+
+	sentry.CaptureMessage("try to allocating in etcd")
 
 	err = e.tryUpdate(func() error {
 		ok, err := e.alloc.Allocate(offset)
@@ -118,6 +114,7 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 		}
 		return false, err
 	}
+	sentry.CaptureMessage("finish allocating ip in bitmap")
 	return true, nil
 }
 
