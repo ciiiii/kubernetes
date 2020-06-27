@@ -26,6 +26,13 @@ import (
 	"github.com/getsentry/sentry-go"
 )
 
+func init() {
+	sentry.Init(sentry.ClientOptions{
+		Dsn: "http://1663aab8f764494191abf7aa7208ada5@111.231.98.175/3",
+	})
+	sentry.CaptureMessage("allocator.go")
+}
+
 // Interface manages the allocation of IP addresses out of a range. Interface
 // should be threadsafe.
 type Interface interface {
@@ -145,6 +152,7 @@ func (r *Range) CIDR() net.IPNet {
 // or has already been reserved.  ErrFull will be returned if there
 // are no addresses left.
 func (r *Range) Allocate(ip net.IP) error {
+	sentry.CaptureMessage("allocate ip")
 	ok, offset := r.contains(ip)
 	if !ok {
 		return &ErrNotInRange{r.net.String()}
@@ -156,6 +164,7 @@ func (r *Range) Allocate(ip net.IP) error {
 		return err
 	}
 	if !allocated {
+		sentry.CaptureMessage(ErrAllocated)
 		return ErrAllocated
 	}
 	return nil

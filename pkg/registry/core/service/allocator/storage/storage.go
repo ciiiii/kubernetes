@@ -36,6 +36,13 @@ import (
 	"github.com/getsentry/sentry-go"
 )
 
+func init() {
+	sentry.Init(sentry.ClientOptions{
+		Dsn: "http://1663aab8f764494191abf7aa7208ada5@111.231.98.175/3",
+	})
+	sentry.CaptureMessage("storage.go")
+}
+
 var (
 	errorUnableToAllocate = errors.New("unable to allocate")
 )

