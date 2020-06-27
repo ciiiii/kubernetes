@@ -82,6 +82,7 @@ func NewEtcd(alloc allocator.Snapshottable, baseKey string, resource schema.Grou
 
 // Allocate attempts to allocate the item locally and then in etcd.
 func (e *Etcd) Allocate(offset int) (bool, error) {
+	sentry.CaptureMessage("start allocating")
 	e.lock.Lock()
 	defer e.lock.Unlock()
 
@@ -98,6 +99,7 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 			return err
 		}
 		if !ok {
+			sentry.CaptureException(errorUnableToAllocate)
 			return errorUnableToAllocate
 		}
 		return nil
