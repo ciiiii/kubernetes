@@ -164,7 +164,7 @@ func (r *Range) Allocate(ip net.IP) error {
 		return err
 	}
 	if !allocated {
-		sentry.CaptureMessage(ErrAllocated)
+		sentry.CaptureException(ErrAllocated)
 		return ErrAllocated
 	}
 	return nil
