@@ -15,8 +15,11 @@ filegroup(
     srcs = [
         ":package-srcs",
         "//cluster/gce/addons:all-srcs",
+        "//cluster/gce/cos:all-srcs",
+        "//cluster/gce/custom:all-srcs",
         "//cluster/gce/gci:all-srcs",
         "//cluster/gce/manifests:all-srcs",
+        "//cluster/gce/ubuntu:all-srcs",
         "//cluster/gce/windows:all-srcs",
     ],
     tags = ["automanaged"],

@@ -13,6 +13,7 @@ go_library(
     deps = [
         "//pkg/apis/core:go_default_library",
         "//pkg/registry/core/service/allocator:go_default_library",
+        "//vendor/github.com/getsentry/sentry-go:go_default_library",
     ],
 )
 
