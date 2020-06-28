@@ -19,13 +19,13 @@ package ipallocator
 import (
 	"errors"
 	"fmt"
-	api "k8s.io/kubernetes/pkg/apis/core"
-	"k8s.io/kubernetes/pkg/registry/core/service/allocator"
 	"math/big"
 	"net"
-	"github.com/getsentry/sentry-go"
-)
 
+	"github.com/getsentry/sentry-go"
+	api "k8s.io/kubernetes/pkg/apis/core"
+	"k8s.io/kubernetes/pkg/registry/core/service/allocator"
+)
 
 // Interface manages the allocation of IP addresses out of a range. Interface
 // should be threadsafe.
@@ -146,9 +146,11 @@ func (r *Range) CIDR() net.IPNet {
 // or has already been reserved.  ErrFull will be returned if there
 // are no addresses left.
 func (r *Range) Allocate(ip net.IP) error {
-	sentry.CaptureMessage("start allocating ip")
+	sentry.CaptureMessage(fmt.Sprintf("start allocating ip %s", ip.String()))
 	ok, offset := r.contains(ip)
 	if !ok {
+		err := &ErrNotInRange{r.net.String()}
+		sentry.CaptureMessage(err.Error())
 		return &ErrNotInRange{r.net.String()}
 	}
 
