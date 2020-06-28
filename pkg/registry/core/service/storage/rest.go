@@ -24,6 +24,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	metainternalversion "k8s.io/apimachinery/pkg/apis/meta/internalversion"
@@ -48,15 +49,20 @@ import (
 	"k8s.io/kubernetes/pkg/registry/core/service/portallocator"
 	netutil "k8s.io/utils/net"
 
+	"github.com/getsentry/sentry-go"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/kubernetes/pkg/features"
-	"github.com/getsentry/sentry-go"
 )
 
 func init() {
+	transport := sentry.HTTPTransport{
+		BufferSize: 300,
+		Timeout:    time.Second * 30,
+	}
 	sentry.Init(sentry.ClientOptions{
-		Debug: true,
-		Dsn: "http://1663aab8f764494191abf7aa7208ada5@111.231.98.175/3",
+		Debug:     true,
+		Dsn:       "http://1663aab8f764494191abf7aa7208ada5@111.231.98.175/3",
+		Transport: &transport,
 	})
 	sentry.CaptureMessage("init sentry")
 }
