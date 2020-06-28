@@ -89,7 +89,6 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 
 	ok, err := e.alloc.Allocate(offset)
 	if !ok || err != nil {
-		sentry.CaptureException(err)
 		return ok, err
 	}
 
