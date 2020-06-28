@@ -55,6 +55,7 @@ import (
 
 func init() {
 	sentry.Init(sentry.ClientOptions{
+		Debug: true,
 		Dsn: "http://1663aab8f764494191abf7aa7208ada5@111.231.98.175/3",
 	})
 	sentry.CaptureMessage("init sentry")
