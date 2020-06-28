@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/getsentry/sentry-go"
 	k8serr "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -33,9 +34,7 @@ import (
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/registry/core/rangeallocation"
 	"k8s.io/kubernetes/pkg/registry/core/service/allocator"
-	"github.com/getsentry/sentry-go"
 )
-
 
 var (
 	errorUnableToAllocate = errors.New("unable to allocate")
@@ -185,6 +184,7 @@ func (e *Etcd) tryUpdate(fn func() error) error {
 			rangeSpec, data := e.alloc.Snapshot()
 			existing.Range = rangeSpec
 			existing.Data = data
+			sentry.CaptureMessage(fmt.Sprintf("update etcd success"))
 			return existing, nil
 		}),
 	)

@@ -18,13 +18,10 @@ package allocator
 
 import (
 	"errors"
-	"fmt"
 	"math/big"
 	"math/rand"
 	"sync"
 	"time"
-
-	"github.com/getsentry/sentry-go"
 )
 
 // AllocationBitmap is a contiguous block of resources that can be allocated atomically.
@@ -94,10 +91,10 @@ func (r *AllocationBitmap) Allocate(offset int) (bool, error) {
 	defer r.lock.Unlock()
 
 	if r.allocated.Bit(offset) == 1 {
-		sentry.CaptureMessage(fmt.Sprintf("bitmap:%d allocate failed", offset))
+		// sentry.CaptureMessage(fmt.Sprintf("bitmap:%d allocate failed", offset))
 		return false, nil
 	}
-	sentry.CaptureMessage(fmt.Sprintf("bitmap:%d allocate success", offset))
+	// sentry.CaptureMessage(fmt.Sprintf("bitmap:%d allocate success", offset))
 	r.allocated = r.allocated.SetBit(r.allocated, offset, 1)
 	r.count++
 	return true, nil
@@ -126,11 +123,11 @@ func (r *AllocationBitmap) Release(offset int) error {
 	defer r.lock.Unlock()
 
 	if r.allocated.Bit(offset) == 0 {
-		sentry.CaptureMessage(fmt.Sprintf("bitmap:%d release failed", offset))
+		// sentry.CaptureMessage(fmt.Sprintf("bitmap:%d release failed", offset))
 		return nil
 	}
 
-	sentry.CaptureMessage(fmt.Sprintf("bitmap:%d release success", offset))
+	// sentry.CaptureMessage(fmt.Sprintf("bitmap:%d release success", offset))
 	r.allocated = r.allocated.SetBit(r.allocated, offset, 0)
 	r.count--
 	return nil
