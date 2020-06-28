@@ -83,7 +83,6 @@ func NewEtcd(alloc allocator.Snapshottable, baseKey string, resource schema.Grou
 
 // Allocate attempts to allocate the item locally and then in etcd.
 func (e *Etcd) Allocate(offset int) (bool, error) {
-	sentry.CaptureMessage("start allocating ip in bitmap")
 	e.lock.Lock()
 	defer e.lock.Unlock()
 
@@ -91,8 +90,6 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 	if !ok || err != nil {
 		return ok, err
 	}
-
-	sentry.CaptureMessage("try to allocating in etcd")
 
 	err = e.tryUpdate(func() error {
 		ok, err := e.alloc.Allocate(offset)
@@ -113,7 +110,6 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 		}
 		return false, err
 	}
-	sentry.CaptureMessage("finish allocating ip in bitmap")
 	return true, nil
 }
 
@@ -154,6 +150,7 @@ func (e *Etcd) Release(item int) error {
 	defer e.lock.Unlock()
 
 	if err := e.alloc.Release(item); err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 

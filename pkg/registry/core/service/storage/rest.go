@@ -298,7 +298,9 @@ func (rs *REST) Delete(ctx context.Context, id string, deleteValidation rest.Val
 func (rs *REST) releaseAllocatedResources(svc *api.Service) {
 	if helper.IsServiceIPSet(svc) {
 		allocator := rs.getAllocatorByClusterIP(svc)
-		allocator.Release(net.ParseIP(svc.Spec.ClusterIP))
+		if err := allocator.Release(net.ParseIP(svc.Spec.ClusterIP)); err != nil {
+			sentry.CaptureException(err)
+		}
 	}
 
 	for _, nodePort := range collectServiceNodePorts(svc) {
@@ -694,7 +696,6 @@ func initClusterIP(service *api.Service, allocator ipallocator.Interface) (bool,
 		service.Spec.ClusterIP = ip.String()
 		return true, nil
 	case service.Spec.ClusterIP != api.ClusterIPNone && service.Spec.ClusterIP != "":
-		sentry.CaptureMessage("Try to respect the requested IP.")
 		// Try to respect the requested IP.
 		if err := allocator.Allocate(net.ParseIP(service.Spec.ClusterIP)); err != nil {
 			// TODO: when validation becomes versioned, this gets more complicated.

@@ -146,7 +146,6 @@ func (r *Range) CIDR() net.IPNet {
 // or has already been reserved.  ErrFull will be returned if there
 // are no addresses left.
 func (r *Range) Allocate(ip net.IP) error {
-	sentry.CaptureMessage(fmt.Sprintf("start allocating ip %s", ip.String()))
 	ok, offset := r.contains(ip)
 	if !ok {
 		err := &ErrNotInRange{r.net.String()}
@@ -154,7 +153,6 @@ func (r *Range) Allocate(ip net.IP) error {
 		return &ErrNotInRange{r.net.String()}
 	}
 
-	sentry.CaptureMessage("try to allocate")
 	allocated, err := r.alloc.Allocate(offset)
 	if err != nil {
 		sentry.CaptureException(err)
@@ -164,7 +162,6 @@ func (r *Range) Allocate(ip net.IP) error {
 		sentry.CaptureException(ErrAllocated)
 		return ErrAllocated
 	}
-	sentry.CaptureMessage("finish allocating ip")
 	return nil
 }
 
