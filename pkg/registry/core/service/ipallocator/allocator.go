@@ -159,6 +159,7 @@ func (r *Range) Allocate(ip net.IP) error {
 		return err
 	}
 	if !allocated {
+		// TODO: http://111.231.98.175/share/issue/2ff6c32828ec427eae0c500da2d44bda/ 
 		sentry.CaptureException(ErrAllocated)
 		return ErrAllocated
 	}
