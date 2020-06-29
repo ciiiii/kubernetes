@@ -85,12 +85,12 @@ func (e *Etcd) Allocate(offset int) (bool, error) {
 	e.lock.Lock()
 	defer e.lock.Unlock()
 
-	ok, err := e.alloc.Allocate(offset)
-	if !ok || err != nil {
-		return ok, err
-	}
+	// ok, err := e.alloc.Allocate(offset)
+	// if !ok || err != nil {
+	// 	return ok, err
+	// }
 
-	err = e.tryUpdate(func() error {
+	err := e.tryUpdate(func() error {
 		ok, err := e.alloc.Allocate(offset)
 		if err != nil {
 			sentry.CaptureException(err)
